@@ -1,0 +1,19 @@
+{
+  "name": "boilerplate",
+  "version": "1.0.0",
+  "description": "An empty template for starting new projects.",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://bill742@github.com/bill742/boilerplate.git"
+  },
+  "author": "Bill Dean",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bill742/boilerplate/issues"
+  },
+  "homepage": "https://github.com/bill742/boilerplate#readme"
+}
