@@ -1,1 +1,1 @@
-console.log("JS file is compiled!");
+console.log("Coffee Script compiled");

@@ -29,6 +29,7 @@ coffeeSources = [
   'assets/coffee/*.coffee'
 ];
 
+// Compile Sass files
 gulp.task('sass', function(){
   return gulp.src(sassSources)
     .pipe(sass({
