@@ -6,7 +6,8 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     concatCss = require('gulp-concat-css'),
     cleanCSS = require('gulp-clean-css'),
-    coffee = require('gulp-coffee');
+    coffee = require('gulp-coffee'),
+    imagemin = require('gulp-imagemin');
 
 var sassSources,
     cssSources,
@@ -63,13 +64,6 @@ gulp.task('js', function() {
       }));
 });
 
-gulp.task('html', function(){
-	gulp.src('*.html')
-    .pipe(browserSync.reload({
-      stream: true
-    }));
-});
-
 gulp.task('coffee', function() {
   gulp.src(coffeeSources)
     .pipe(coffee({bare: true}))
@@ -79,6 +73,19 @@ gulp.task('coffee', function() {
     .pipe(browserSync.reload({
       stream: true
     }));
+});
+
+gulp.task('html', function(){
+	gulp.src('*.html')
+    .pipe(browserSync.reload({
+      stream: true
+    }));
+});
+
+gulp.task('images', function(){
+	gulp.src('images/*')
+    .pipe(imagemin())
+    .pipe(gulp.dest('images'));
 });
 
 gulp.task('misc', function(){
