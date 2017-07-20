@@ -5,63 +5,54 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     autoprefixer = require('gulp-autoprefixer'),
     concatCss = require('gulp-concat-css'),
-    cleanCSS = require('gulp-clean-css'),
+    // cleanCSS = require('gulp-clean-css'),
+    minify = require('gulp-minify-css'),
     coffee = require('gulp-coffee'),
-    imagemin = require('gulp-imagemin');
+    imagemin = require('gulp-imagemin'),
+    merge = require('merge-stream');
 
 var sassSources,
     cssSources,
     jsSources,
     coffeeSources;
 
-sassSources = [
-  'assets/sass/*.sass'
-];
+sassSources = ['assets/sass/*.sass'];
+cssSources = ['assets/css/*.css'];
+jsSources = ['assets/js/*.js'];
+coffeeSources = ['assets/coffee/*.coffee'];
 
-cssSources = [
-  'assets/css/*.css'
-];
+gulp.task('css', function(){
+  // Prefix and concat SASS files
+  var sassStream = gulp.src(sassSources)
+    .pipe(sass())
+    .pipe(concat('sass-files.sass'));
 
-jsSources = [
-  'assets/js/*.js'
-];
+  // Concat and minify all .css files
+  var cssStream = gulp.src(cssSources)
+    .pipe(concat('css-files.css'));
 
-coffeeSources = [
-  'assets/coffee/*.coffee'
-];
-
-// Compile Sass files
-gulp.task('sass', function(){
-  return gulp.src(sassSources)
-    .pipe(sass({
-      outputStyle: 'compressed'
-    }))
+  var mergedStream = merge(sassStream, cssStream)
     .pipe(autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
     }))
-    .pipe(gulp.dest('assets/css'));
-});
-
-// Concat and minify all .css files
-gulp.task('css', function(){
-    return gulp.src(cssSources)
-    .pipe(concatCss("main.css"))
-    .pipe(cleanCSS({compatibility: 'ie8'}))
+    .pipe(concat('main.css'))
+    .pipe(minify())
     .pipe(gulp.dest('css/'))
     .pipe(browserSync.reload({
       stream: true
     }));
+  return mergedStream;
 });
 
 gulp.task('js', function() {
   gulp.src(jsSources)
-      .pipe(concat('scripts.js'))
-      .pipe(uglify())
-      .pipe(gulp.dest('js'))
-      .pipe(browserSync.reload({
-        stream: true
-      }));
+    .pipe(concat('scripts.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest('js/'))
+    .pipe(browserSync.reload({
+      stream: true
+    }));
 });
 
 gulp.task('coffee', function() {
@@ -95,8 +86,8 @@ gulp.task('misc', function(){
     }));
 });
 
-gulp.task('watch', ['browserSync', 'js', 'sass', 'css', 'coffee'], function(){
-  gulp.watch(sassSources, ['sass']);
+gulp.task('watch', ['browserSync', 'js', 'css'], function(){
+  gulp.watch(sassSources, ['css']);
   gulp.watch(cssSources, ['css']);
   gulp.watch('*.html', ['html']);
   gulp.watch(jsSources, ['js']);
@@ -112,4 +103,4 @@ gulp.task('browserSync', function() {
   });
 });
 
-gulp.task('default', ['sass', 'css', 'js', 'coffee', 'html', 'misc', 'watch']);
+gulp.task('default', ['css', 'js', 'html', 'misc', 'watch']);
